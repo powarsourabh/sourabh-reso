@@ -1,6 +1,6 @@
 
   
-  <div class="container" style="margin-top: 10px;">
+   <div class="container" style="margin-top: 10px;">
 
   
 
@@ -11,38 +11,42 @@
   
   
 
-    <form *ngIf="showForm" (ngSubmit)="addItem()" #itemForm="ngForm" style="max-width: fit-content;">
+    
+   
+  
+    <form *ngIf="showForm" (ngSubmit)="addItem(itemForm)" #itemForm="ngForm" style="max-width: fit-content;">
       <input type="hidden" [(ngModel)]="newItem.id" name="id">
       <div>
         <label>Name:</label>
         <input type="text" [(ngModel)]="newItem.name" name="name" required>
+        <div *ngIf="itemForm.controls['name'].invalid && itemForm.controls['name'].touched">
+          <div style="color: red;" *ngIf="itemForm.controls['name'].errors?.['required']">Name is required.</div>
+        </div>
       </div>
       <div>
         <label>Role</label>
-        <select  [(ngModel)]="newItem.role" name="role">
+        <select [(ngModel)]="newItem.role" name="role" required>
+          <option value="" disabled>Select a role</option>
           <option value="User">User</option>
           <option value="Admin">Admin</option>
         </select>
+        <div *ngIf="itemForm.controls['role'].invalid && itemForm.controls['role'].touched">
+          <div style="color: red;" *ngIf="itemForm.controls['role'].errors?.['required']">Role is required.</div>
+        </div>
       </div>
       <div>
         <label>Email:</label>
-        <input type="email" [(ngModel)]="newItem.email" name="email" required>
-        <!-- <div *ngIf="itemForm.controls.email.invalid && itemForm.controls.email.touched">
-          <div *ngIf="itemForm.controls.email.errors.required">Email is required.</div>
-          <div *ngIf="itemForm.controls.email.errors.email">Invalid email format.</div>
-        </div> -->
+        <input type="email" [(ngModel)]="newItem.email" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
         <div *ngIf="itemForm.controls['email'].invalid && itemForm.controls['email'].touched">
           <div style="color: red;" *ngIf="itemForm.controls['email'].errors?.['required']">Email is required.</div>
-          <div *ngIf="itemForm.controls['email'].errors?.['email']">Invalid email format.</div>
+          <div style="color: red;" *ngIf="itemForm.controls['email'].errors?.['pattern']">Invalid email format.</div>
         </div>
-
-        
       </div>
-    
-      <button type="submit" class="btn btn-primary">{{ editMode ? 'Update' : 'Add' }}</button>
+      <button type="submit" class="btn btn-primary" [disabled]="itemForm.invalid">{{ editMode ? 'Update' : 'Add' }}</button>
     </form>
     
-  
+
+
     <div>
       <label>Search:</label>
       <input type="text" [(ngModel)]="searchQuery" (input)="applyFilter()" placeholder="Search by name or email ">
@@ -81,4 +85,5 @@
     </div>
   </div>
   
-</div>
+</div> 
+

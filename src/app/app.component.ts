@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService, Item} from './data.service';
+import { NgForm } from '@angular/forms';
 
 
 
@@ -43,20 +44,26 @@ showForm = false;
     }
   }
 
-  addItem() {
-    if (this.editMode) {
-      this.dataService.updateData(this.newItem);
-      this.editMode = false;
-    } else {
-      this.newItem.id = this.data.length > 0 ? Math.max(...this.data.map(item => item.id || 0)) + 1 : 1;
-      this.dataService.addData(this.newItem);
-    }
-    this.newItem = { id:0, name: '', role:'', email:'' };
-    this.data = this.dataService.getData(); 
-    this.applyFilter();
-    this.toggleForm();
 
+
+  
+  addItem(itemForm: NgForm) {
+    if (itemForm.valid) {
+      if (this.editMode) {
+        this.dataService.updateData(this.newItem);
+        this.editMode = false;
+      } else {
+        this.newItem.id = this.data.length > 0 ? Math.max(...this.data.map(item => item.id || 0)) + 1 : 1;
+        this.dataService.addData(this.newItem);
+      }
+      this.newItem = { id: 0, name: '', role: '', email: '' };
+      this.data = this.dataService.getData();
+      this.applyFilter();
+      this.toggleForm();
+    }
   }
+  
+
 
   editItem(item: Item) {
     this.newItem = { ...item };
@@ -112,4 +119,8 @@ showForm = false;
   get totalPages(): number {
     return Math.ceil(this.filteredData.length / this.itemsPerPage);
   }
+
+  
+  
 }
+
